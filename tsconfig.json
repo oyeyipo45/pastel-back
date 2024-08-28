@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "es2016",
+    "declaration": true,
+     "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "module": "commonjs",           
+     "outDir": "./dist",
+      "sourceMap": true,   
+     "baseUrl" : "./",                        
+    "esModuleInterop": true,                         
+    "forceConsistentCasingInFileNames": true,  
+    "strict": true,  
+    "paths": {
+      "@/*": ["src/*"],
+    }                                   
+  }
+}
