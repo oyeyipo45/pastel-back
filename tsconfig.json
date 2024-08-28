@@ -14,6 +14,11 @@
     "forceConsistentCasingInFileNames": true,  
     "strict": true,  
     "paths": {
+      "@Server/*": ["src/Server/*"],
+      "@Dto/*": ["src/Dto/*"],
+      "@Utils/*": ["src/Utils/*"],
+      "@Exceptions/*": ["src/Exceptions/*"],
+      "@Interfaces/*": ["src/Interfaces/*"],
       "@/*": ["src/*"],
     }                                   
   }
