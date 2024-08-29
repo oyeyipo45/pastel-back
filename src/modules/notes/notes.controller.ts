@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Body, UsePipes, Param } from '@nestjs/common';
-import { CreateNoteDto } from './dtos/note.dto';
+import { Controller, Get, Post, Body, UsePipes, Param, Put } from '@nestjs/common';
+import { CreateNoteDto } from './dtos/create-note.dto';
 import { NotesService } from './notes.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { APIResponse } from '../../common/types/api-response.type';
@@ -34,5 +34,13 @@ export class NotesController {
   @Get('/:id')
   async fetchNoteById(@Param('id') id: string): Promise<APIResponse<Note>> {
     return this.noteService.fetchNoteById(id);
+  }
+
+  @ApiOperation({
+    summary: 'Update note',
+  })
+  @Put('/:id')
+  async updateNote(@Param('id') id: string, @Body() updateNoteDto: CreateNoteDto): Promise<APIResponse<Note>> {
+    return this.noteService.updateNote(id, updateNoteDto);
   }
 }
