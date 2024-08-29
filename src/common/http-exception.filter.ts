@@ -1,5 +1,3 @@
-
-
 import {
   ArgumentsHost,
   Catch,
@@ -25,7 +23,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const response = context.getResponse<Response>();
     const status = exception.getStatus
       ? exception.getStatus()
-      : HttpStatus.INTERNAL_SERVER_ERROR;
+      : HttpStatus.NOT_FOUND;
 
     const errorResponse: APIResponse = {
       status,

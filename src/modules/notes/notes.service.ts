@@ -36,8 +36,8 @@ export class NotesService {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     } catch (error) {
-      const { message, statusCode } = ErrorComposer.compose(error);
-      throw new HttpException(message, statusCode);
+      const { message, status } = ErrorComposer.compose(error);
+      throw new HttpException(message, status);
     }
   }
 
@@ -50,18 +50,18 @@ export class NotesService {
         return {
           success: true,
           status: HttpStatus.OK,
-          message: `Notes fetched successfully`,
+          message: `Notes retrieved successfully`,
           data: notes,
         };
       }
 
       throw new HttpException(
-        'Unable to fetch notes',
+        'Unable to retrieve notes',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     } catch (error) {
-      const { message, statusCode } = ErrorComposer.compose(error);
-      throw new HttpException(message, statusCode);
+      const { message, status } = ErrorComposer.compose(error);
+      throw new HttpException(message, status);
     }
   }
 
@@ -74,18 +74,20 @@ export class NotesService {
         return {
           success: true,
           status: HttpStatus.OK,
-          message: `Note fetched successfully`,
+          message: `Note retrieved successfully`,
           data: note,
         };
       }
 
       throw new HttpException(
-        'Unable to fetch note',
+        'Unable to retrieve note',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     } catch (error) {
-      const { message, statusCode } = ErrorComposer.compose(error);
-      throw new HttpException(message, statusCode);
+      
+      
+      const { message, status } = ErrorComposer.compose(error);
+      throw new HttpException(message, status);
     }
   }
 
@@ -113,12 +115,12 @@ export class NotesService {
       }
 
       throw new HttpException(
-        'Unable to fetch note',
+        'Unable to retrieve note',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     } catch (error) {
-      const { message, statusCode } = ErrorComposer.compose(error);
-      throw new HttpException(message, statusCode);
+      const { message, status } = ErrorComposer.compose(error);
+      throw new HttpException(message, status);
     }
   }
 
@@ -144,12 +146,12 @@ export class NotesService {
       }
 
       throw new HttpException(
-        'Unable to fetch note',
+        'Unable to retrieve note',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     } catch (error) {
-      const { message, statusCode } = ErrorComposer.compose(error);
-      throw new HttpException(message, statusCode);
+      const { message, status } = ErrorComposer.compose(error);
+      throw new HttpException(message, status);
     }
   }
 
@@ -159,7 +161,7 @@ export class NotesService {
       .exec();
 
     if (!note) {
-      throw new HttpException('Note does not exist', HttpStatus.NOT_FOUND);
+      throw new HttpException('Note does not existeeeeeeee', HttpStatus.NOT_FOUND);
     }
 
     return note;

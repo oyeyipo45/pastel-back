@@ -1,4 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
+import { CONSTANTS } from '../common/constants';
 
 export class ErrorComposer extends Error {
   /**
@@ -7,12 +8,12 @@ export class ErrorComposer extends Error {
    * @returns The composed error message.
    */
 
-  public static compose(error: any): { message: string; statusCode: number } {
+  public static compose(error: any): { message: string; status: number } {
     //mongoose bad ObjectId
     if (error.name === 'CastError') {
       return {
         message: `Note with id:${error.value} not found`,
-        statusCode: HttpStatus.NOT_FOUND,
+        status: HttpStatus.NOT_FOUND,
       };
     }
 
@@ -20,13 +21,14 @@ export class ErrorComposer extends Error {
     if (error.code === 11000) {
       return {
         message: `Duplicate field value entered`,
-        statusCode: HttpStatus.BAD_REQUEST,
+        status: HttpStatus.BAD_REQUEST,
       };
     }
+    
 
     return {
-      message: error.message,
-      statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+      message: error.message  || CONSTANTS.INTERNAL_SERVER_ERROR_MESSAGE,
+      status: error.status  || HttpStatus.INTERNAL_SERVER_ERROR,
     };
   }
 }
