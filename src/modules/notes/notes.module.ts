@@ -1,10 +1,12 @@
-import { Connection } from 'mongoose';
-import { NotesSchema } from '../../models/note.model';
+import { Module } from '@nestjs/common';
+import { DatabaseModule } from '../../datasource/database.module';
+import { NotesProviders } from './notes.providers';
+import { NotesService } from './notes.service';
+import { NotesController } from './notes.controller';
 
-export const NotesProviders = [
-  {
-    provide: 'NOTE_MODEL',
-    useFactory: (connection: Connection) => connection.model('Note', NotesSchema),
-    inject: ['DATABASE_CONNECTION'],
-  },
-];
+@Module({
+  imports: [DatabaseModule],
+  controllers: [NotesController],
+  providers: [NotesService, ...NotesProviders],
+})
+export class NotesModule {}

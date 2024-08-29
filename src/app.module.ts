@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { Environment } from './common/types/env.enums';
 import { configValidator } from './config/env.validation';
 import { configuration } from './config';
+import { NotesModule } from './modules/notes/notes.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { configuration } from './config';
         configuration().nodeENV === Environment.TEST ? '.env.local' : '.env',
     }),
     HealthModule,
+    NotesModule,
   ],
   controllers: [],
   providers: [],
