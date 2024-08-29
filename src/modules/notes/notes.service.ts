@@ -1,8 +1,9 @@
 import { Model } from 'mongoose';
 import { Injectable, Inject, HttpStatus, HttpException } from '@nestjs/common';
-import { CreateNoteDto } from './dtos/note.dto';
+import { CreateNoteDto } from './dtos/create-note.dto';
 import { Note } from './Interfaces/note.interface';
 import { APIResponse } from '../../common/types/api-response.type';
+import { UpdateNoteDto } from './dtos/update-note.dto';
 
 @Injectable()
 export class NotesService {
@@ -61,6 +62,26 @@ export class NotesService {
         status: HttpStatus.OK,
         message: `Note fetched successfully`,
         data: note,
+      };
+    }
+
+    throw new HttpException(
+      'Unable to fetch note',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
+  }
+
+  async updateNote(body: UpdateNoteDto): Promise<APIResponse> {
+    // Fetch note available in the DB using provided id and update with new data
+    const { _id: id, title, content } = body;
+
+    const note = await this.noteModel.findByIdAndUpdate(id, { title, content });
+
+    if (note) {
+      return {
+        success: true,
+        status: HttpStatus.OK,
+        message: `Note updated successfully`,
       };
     }
 
