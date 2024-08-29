@@ -41,12 +41,31 @@ export class NotesService {
         success: true,
         status: HttpStatus.OK,
         message: `Notes fetched successfully`,
-        data : notes
+        data: notes,
       };
     }
 
     throw new HttpException(
       'Unable to fetch notes',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
+  }
+
+  async fetchNoteById(id: string): Promise<APIResponse<Note>> {
+    // Fetch note available in the DB using provided
+    const note = await this.noteModel.findById(id);
+
+    if (note) {
+      return {
+        success: true,
+        status: HttpStatus.OK,
+        message: `Note fetched successfully`,
+        data: note,
+      };
+    }
+
+    throw new HttpException(
+      'Unable to fetch note',
       HttpStatus.INTERNAL_SERVER_ERROR,
     );
   }

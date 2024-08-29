@@ -5,4 +5,6 @@ export const NotesSchema = new mongoose.Schema({
   content: String,
   createdAt: Date,
   isDeleted: Boolean,
+}, {
+  versionKey: false, // Disable the __v field
 });
