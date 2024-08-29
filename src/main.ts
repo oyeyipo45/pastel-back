@@ -25,7 +25,11 @@ async function bootstrap() {
       .setDescription('OpenAPI swagger documentation for Pastel backend')
       .addTag(
         'Health',
-        'Health checks for application and countries external API',
+        'Health checks for application',
+      )
+      .addTag(
+        'Notes',
+        'Operations dealing with notes',
       )
       .setVersion('1.0')
       .build();
