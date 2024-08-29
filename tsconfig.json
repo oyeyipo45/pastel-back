@@ -20,6 +20,8 @@
     "resolveJsonModule": true,
     "paths": {
       "@Health/*": ["src/modules/health/*"],
+      "@Common/*": ["src/common/*"],
+      "@Config/*": ["src/config/*"],
       "@/*": ["src/*"],
     }
   }
