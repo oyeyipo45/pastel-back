@@ -3,8 +3,6 @@ import { Injectable, Inject, HttpStatus, HttpException } from '@nestjs/common';
 import { CreateNoteDto } from './dtos/create-note.dto';
 import { Note } from './Interfaces/note.interface';
 import { APIResponse } from '../../common/types/api-response.type';
-import { UpdateNoteDto } from './dtos/update-note.dto';
-
 @Injectable()
 export class NotesService {
   constructor(
@@ -54,7 +52,9 @@ export class NotesService {
 
   async fetchNoteById(id: string): Promise<APIResponse<Note>> {
     // Fetch note available in the DB using provided
-    const note = await this.noteModel.findOne({ id, isDeleted: false });
+    const note = await this.noteModel
+      .findOne({ _id: id, isDeleted: false })
+      .exec();
 
     if (!note) {
       return {
@@ -84,7 +84,9 @@ export class NotesService {
     const { title, content } = body;
 
     // Validate note exists
-    const note = await this.noteModel.findOne({ id, isDeleted: false });
+    const note = await this.noteModel
+      .findOne({ _id: id, isDeleted: false })
+      .exec();
 
     if (!note) {
       return {
@@ -106,6 +108,42 @@ export class NotesService {
         success: true,
         status: HttpStatus.OK,
         message: `Note updated successfully`,
+      };
+    }
+
+    throw new HttpException(
+      'Unable to fetch note',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
+  }
+
+  async deleteNote(id: string): Promise<APIResponse> {
+    // Fetch note available in the DB using provided id and update with new data
+
+    // Validate note exists
+    const note = await this.noteModel
+      .findOne({ _id: id, isDeleted: false })
+      .exec();
+
+    if (!note) {
+      return {
+        success: false,
+        status: HttpStatus.NOT_FOUND,
+        message: `Note does not exist`,
+      };
+    }
+
+    // soft delete note note
+    const updatedNote = await this.noteModel.findByIdAndUpdate(id, {
+      isDeleted: true,
+    });
+
+    // Return note
+    if (updatedNote) {
+      return {
+        success: true,
+        status: HttpStatus.OK,
+        message: `Note deleted successfully`,
       };
     }
 
