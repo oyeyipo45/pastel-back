@@ -4,6 +4,7 @@ import { NotesService } from './notes.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { APIResponse } from '../../common/types/api-response.type';
 import { ValidationPipe } from '../../common/pipes/validation.pipe';
+import { Note } from './Interfaces/note.interface';
 
 @ApiTags('Notes')
 @Controller({ path: 'api/notes', version: '1' })
@@ -15,7 +16,15 @@ export class NotesController {
   })
   @Post()
   @UsePipes(new ValidationPipe())
-  async create(@Body() createNoteDto: CreateNoteDto): Promise<APIResponse> {
-    return this.noteService.create(createNoteDto);
+  async createNote(@Body() createNoteDto: CreateNoteDto): Promise<APIResponse> {
+    return this.noteService.createNote(createNoteDto);
+  }
+
+  @ApiOperation({
+    summary: 'Fetch all notes',
+  })
+  @Get()
+  async fetchNotes(): Promise<APIResponse<Note[]>> {
+    return this.noteService.fetchNotes();
   }
 }
