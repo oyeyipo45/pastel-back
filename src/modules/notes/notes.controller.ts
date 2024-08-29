@@ -48,10 +48,18 @@ export class NotesController {
   }
 
   @ApiOperation({
-    summary: 'Delete note by provided Id',
+    summary: 'soft delete note by provided Id',
   })
   @Delete('/:id')
   async deleteNote(@Param('id') id: string): Promise<APIResponse<Note>> {
     return this.noteService.deleteNote(id);
+  }
+
+  @ApiOperation({
+    summary: 'Hard delete note by provided Id forever',
+  })
+  @Delete('/:id/hard')
+  async hardDeleteNote(@Param('id') id: string): Promise<APIResponse<Note>> {
+    return this.noteService.hardDeleteNote(id);
   }
 }

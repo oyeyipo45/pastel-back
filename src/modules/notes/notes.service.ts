@@ -36,8 +36,8 @@ export class NotesService {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     } catch (error) {
-      const { message, statusCode } = ErrorComposer.compose(error);
-      throw new HttpException(message, statusCode);
+      const { message, status } = ErrorComposer.compose(error);
+      throw new HttpException(message, status);
     }
   }
 
@@ -50,18 +50,18 @@ export class NotesService {
         return {
           success: true,
           status: HttpStatus.OK,
-          message: `Notes fetched successfully`,
+          message: `Notes retrieved successfully`,
           data: notes,
         };
       }
 
       throw new HttpException(
-        'Unable to fetch notes',
+        'Unable to retrieve notes',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     } catch (error) {
-      const { message, statusCode } = ErrorComposer.compose(error);
-      throw new HttpException(message, statusCode);
+      const { message, status } = ErrorComposer.compose(error);
+      throw new HttpException(message, status);
     }
   }
 
@@ -74,18 +74,18 @@ export class NotesService {
         return {
           success: true,
           status: HttpStatus.OK,
-          message: `Note fetched successfully`,
+          message: `Note retrieved successfully`,
           data: note,
         };
       }
 
       throw new HttpException(
-        'Unable to fetch note',
+        'Unable to retrieve note',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     } catch (error) {
-      const { message, statusCode } = ErrorComposer.compose(error);
-      throw new HttpException(message, statusCode);
+      const { message, status } = ErrorComposer.compose(error);
+      throw new HttpException(message, status);
     }
   }
 
@@ -113,12 +113,12 @@ export class NotesService {
       }
 
       throw new HttpException(
-        'Unable to fetch note',
+        'Unable to retrieve note',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     } catch (error) {
-      const { message, statusCode } = ErrorComposer.compose(error);
-      throw new HttpException(message, statusCode);
+      const { message, status } = ErrorComposer.compose(error);
+      throw new HttpException(message, status);
     }
   }
 
@@ -144,12 +144,41 @@ export class NotesService {
       }
 
       throw new HttpException(
-        'Unable to fetch note',
+        'Unable to retrieve note',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     } catch (error) {
-      const { message, statusCode } = ErrorComposer.compose(error);
-      throw new HttpException(message, statusCode);
+      const { message, status } = ErrorComposer.compose(error);
+      throw new HttpException(message, status);
+    }
+  }
+
+  async hardDeleteNote(id: string): Promise<APIResponse> {
+    try {
+      // Fetch note available in the DB using provided id and update with new data
+
+      // Validate note exists
+      await this._findNote(id);
+
+      // soft delete note note
+      const deletedNote = await this.noteModel.findByIdAndDelete(id);
+
+      // Return note
+      if (deletedNote) {
+        return {
+          success: true,
+          status: HttpStatus.OK,
+          message: `Note deleted successfully`,
+        };
+      }
+
+      throw new HttpException(
+        'Unable to retrieve note',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    } catch (error) {
+      const { message, status } = ErrorComposer.compose(error);
+      throw new HttpException(message, status);
     }
   }
 
