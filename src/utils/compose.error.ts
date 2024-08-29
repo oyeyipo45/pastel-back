@@ -11,8 +11,8 @@ export class ErrorComposer extends Error {
     //mongoose bad ObjectId
     if (error.name === 'CastError') {
       return {
-        message: `Note not found with id of ${error.value}`,
-        statusCode: HttpStatus.BAD_REQUEST,
+        message: `Note with id:${error.value} not found`,
+        statusCode: HttpStatus.NOT_FOUND,
       };
     }
 
