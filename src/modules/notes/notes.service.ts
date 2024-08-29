@@ -134,12 +134,12 @@ export class NotesService {
     }
 
     // soft delete note note
-    const updatedNote = await this.noteModel.findByIdAndUpdate(id, {
+    const deletedNote = await this.noteModel.findByIdAndUpdate(id, {
       isDeleted: true,
     });
 
     // Return note
-    if (updatedNote) {
+    if (deletedNote) {
       return {
         success: true,
         status: HttpStatus.OK,
