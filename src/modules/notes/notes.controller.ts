@@ -40,7 +40,7 @@ export class NotesController {
     summary: 'Update note',
   })
   @Put('/:id')
-  async updateNote(@Param('id') id: string): Promise<APIResponse<Note>> {
-    return this.noteService.fetchNoteById(id);
+  async updateNote(@Param('id') id: string, @Body() updateNoteDto: CreateNoteDto): Promise<APIResponse<Note>> {
+    return this.noteService.updateNote(id, updateNoteDto);
   }
 }

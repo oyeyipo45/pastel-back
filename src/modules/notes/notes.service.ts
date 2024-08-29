@@ -35,7 +35,7 @@ export class NotesService {
 
   async fetchNotes(): Promise<APIResponse<Note[]>> {
     // Fetch all notes available in the DB
-    const notes = await this.noteModel.find();
+    const notes = await this.noteModel.find({ isDeleted: false });
 
     if (notes) {
       return {
@@ -54,7 +54,15 @@ export class NotesService {
 
   async fetchNoteById(id: string): Promise<APIResponse<Note>> {
     // Fetch note available in the DB using provided
-    const note = await this.noteModel.findById(id);
+    const note = await this.noteModel.findOne({ id, isDeleted: false });
+
+    if (!note) {
+      return {
+        success: false,
+        status: HttpStatus.NOT_FOUND,
+        message: `Note does not exist`,
+      };
+    }
 
     if (note) {
       return {
@@ -71,13 +79,29 @@ export class NotesService {
     );
   }
 
-  async updateNote(body: UpdateNoteDto): Promise<APIResponse> {
+  async updateNote(id: string, body: CreateNoteDto): Promise<APIResponse> {
     // Fetch note available in the DB using provided id and update with new data
-    const { _id: id, title, content } = body;
+    const { title, content } = body;
 
-    const note = await this.noteModel.findByIdAndUpdate(id, { title, content });
+    // Validate note exists
+    const note = await this.noteModel.findOne({ id, isDeleted: false });
 
-    if (note) {
+    if (!note) {
+      return {
+        success: false,
+        status: HttpStatus.NOT_FOUND,
+        message: `Note does not exist`,
+      };
+    }
+
+    // Update and save note
+    const updatedNote = await this.noteModel.findByIdAndUpdate(id, {
+      title,
+      content,
+    });
+
+    // Return note
+    if (updatedNote) {
       return {
         success: true,
         status: HttpStatus.OK,
