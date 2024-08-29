@@ -1,15 +1,18 @@
 import * as mongoose from 'mongoose';
+import { ConfigService } from '@nestjs/config';
+import { config } from 'dotenv';
+
+config();
+
+const configService = new ConfigService();
 
 // Envirionment variabled
-const USERNAME = process.env.USERNAME;
-const PASSWORD = process.env.PASSWORD;
-const DB_NAME = process.env.DB_NAME;
+const USERNAME = configService.get('USERNAME');
+const PASSWORD = configService.get('PASSWORD');
+const DB_NAME = configService.get('DB_NAME');
 
 // connection string to mongo atlas
-// const uri = `mongodb+srv://${USERNAME}:${PASSWORD}@damilola.s7fen.mongodb.net/?retryWrites=true&w=majority&appName=${DB_NAME}`;
-
-const uri = `mongodb+srv://oyeyipo45:Kolade11.@damilola.s7fen.mongodb.net/?retryWrites=true&w=majority&appName=${DB_NAME}`;
-
+const uri = `mongodb+srv://${USERNAME}:${PASSWORD}@damilola.s7fen.mongodb.net/?retryWrites=true&w=majority&appName=${DB_NAME}`
 
 
 export const databaseProviders = [
