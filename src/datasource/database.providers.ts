@@ -6,7 +6,11 @@ const PASSWORD = process.env.PASSWORD;
 const DB_NAME = process.env.DB_NAME;
 
 // connection string to mongo atlas
-const uri = `mongodb+srv://${USERNAME}:${PASSWORD}@lenda.padmy06.mongodb.net/?retryWrites=true&w=majority&appName=${DB_NAME}`;
+// const uri = `mongodb+srv://${USERNAME}:${PASSWORD}@damilola.s7fen.mongodb.net/?retryWrites=true&w=majority&appName=${DB_NAME}`;
+
+const uri = `mongodb+srv://oyeyipo45:Kolade11.@damilola.s7fen.mongodb.net/?retryWrites=true&w=majority&appName=${DB_NAME}`;
+
+
 
 export const databaseProviders = [
   {
