@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, UsePipes, Param, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, UsePipes, Param, Put, Delete } from '@nestjs/common';
 import { CreateNoteDto } from './dtos/create-note.dto';
 import { NotesService } from './notes.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -29,7 +29,7 @@ export class NotesController {
   }
 
   @ApiOperation({
-    summary: 'Fetch note by Id',
+    summary: 'Fetch note by provided Id',
   })
   @Get('/:id')
   async fetchNoteById(@Param('id') id: string): Promise<APIResponse<Note>> {
@@ -37,10 +37,21 @@ export class NotesController {
   }
 
   @ApiOperation({
-    summary: 'Update note',
+    summary: 'Update note by provided Id',
   })
   @Put('/:id')
-  async updateNote(@Param('id') id: string, @Body() updateNoteDto: CreateNoteDto): Promise<APIResponse<Note>> {
+  async updateNote(
+    @Param('id') id: string,
+    @Body() updateNoteDto: CreateNoteDto,
+  ): Promise<APIResponse<Note>> {
     return this.noteService.updateNote(id, updateNoteDto);
+  }
+
+  @ApiOperation({
+    summary: 'Delete note by provided Id',
+  })
+  @Delete('/:id')
+  async deleteNote(@Param('id') id: string): Promise<APIResponse<Note>> {
+    return this.noteService.deleteNote(id);
   }
 }
