@@ -15,7 +15,7 @@ export class ValidationPipe implements PipeTransform<unknown> {
     
     if (value instanceof Object && this.isEmpty(value)) {
       throw new HttpException(
-        'Validation failed: no body submitted',
+        'Validation failed: No body submitted',
         HttpStatus.BAD_REQUEST,
       );
     }
