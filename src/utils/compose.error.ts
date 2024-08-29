@@ -8,12 +8,18 @@ export class ErrorComposer extends Error {
    * @returns The composed error message.
    */
 
-  public static compose(error: any): { message: string; status: number } {
+  public static compose(error: any): {
+    message: string;
+    status: number;
+
+    success: Boolean;
+  } {
     //mongoose bad ObjectId
     if (error.name === 'CastError') {
       return {
         message: `Note with id:${error.value} not found`,
         status: HttpStatus.NOT_FOUND,
+        success: false,
       };
     }
 
@@ -22,13 +28,14 @@ export class ErrorComposer extends Error {
       return {
         message: `Duplicate field value entered`,
         status: HttpStatus.BAD_REQUEST,
+        success: false,
       };
     }
-    
 
     return {
-      message: error.message  || CONSTANTS.INTERNAL_SERVER_ERROR_MESSAGE,
-      status: error.status  || HttpStatus.INTERNAL_SERVER_ERROR,
+      message: error.message || CONSTANTS.INTERNAL_SERVER_ERROR_MESSAGE,
+      status: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      success: false,
     };
   }
 }

@@ -84,8 +84,6 @@ export class NotesService {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     } catch (error) {
-      
-      
       const { message, status } = ErrorComposer.compose(error);
       throw new HttpException(message, status);
     }
@@ -155,13 +153,42 @@ export class NotesService {
     }
   }
 
+  async hardDeleteNote(id: string): Promise<APIResponse> {
+    try {
+      // Fetch note available in the DB using provided id and update with new data
+
+      // Validate note exists
+      await this._findNote(id);
+
+      // soft delete note note
+      const deletedNote = await this.noteModel.findByIdAndDelete(id);
+
+      // Return note
+      if (deletedNote) {
+        return {
+          success: true,
+          status: HttpStatus.OK,
+          message: `Note deleted successfully`,
+        };
+      }
+
+      throw new HttpException(
+        'Unable to retrieve note',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    } catch (error) {
+      const { message, status } = ErrorComposer.compose(error);
+      throw new HttpException(message, status);
+    }
+  }
+
   private async _findNote(id: String) {
     const note = await this.noteModel
       .findOne({ _id: id, isDeleted: false })
       .exec();
 
     if (!note) {
-      throw new HttpException('Note does not existeeeeeeee', HttpStatus.NOT_FOUND);
+      throw new HttpException('Note does not exist', HttpStatus.NOT_FOUND);
     }
 
     return note;
