@@ -6,6 +6,8 @@ import { Environment } from './common/types/env.enums';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { configuration } from './config';
 import { VersioningType } from '@nestjs/common';
+import * as compression from 'compression';
+import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -18,19 +20,21 @@ async function bootstrap() {
     type: VersioningType.URI,
   });
 
+  // Cross-Origin Resource Sharing (CORS)
+  // This is set to generic to not disturb any frontend integrations or tests
+  const origin = '*';
+  app.enableCors({ origin });
+
+  // Compression - Reduce Response Size
+  app.use(compression());
+
   // Swagger OpenAPI
   if (configService.get('NODE_ENV') !== Environment.PROD) {
     const config = new DocumentBuilder()
       .setTitle('Pastel API')
       .setDescription('OpenAPI swagger documentation for Pastel backend')
-      .addTag(
-        'Health',
-        'Health checks for application',
-      )
-      .addTag(
-        'Notes',
-        'Operations dealing with notes',
-      )
+      .addTag('Health', 'Health checks for application')
+      .addTag('Notes', 'Operations dealing with notes')
       .setVersion('1.0')
       .build();
     const document = SwaggerModule.createDocument(app, config);
@@ -48,6 +52,9 @@ async function bootstrap() {
         'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.css',
       ],
     });
+
+    // Helmet - Security Middleware
+    app.use(helmet());
   }
 
   // Listen to serve

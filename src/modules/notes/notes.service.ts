@@ -3,6 +3,7 @@ import { Injectable, Inject, HttpStatus, HttpException } from '@nestjs/common';
 import { CreateNoteDto } from './dtos/create-note.dto';
 import { Note } from './Interfaces/note.interface';
 import { APIResponse } from '../../common/types/api-response.type';
+import { ErrorComposer } from '../../utils/compose.error';
 @Injectable()
 export class NotesService {
   constructor(
@@ -11,145 +12,156 @@ export class NotesService {
   ) {}
 
   async createNote(createNoteDto: CreateNoteDto): Promise<APIResponse> {
-    // Create a new note object
-    const data = { ...createNoteDto, createdAt: new Date(), isDeleted: false };
-
-    // Create note and save in DB
-    const createdNote = await this.noteModel.create(data);
-
-    if (createdNote) {
-      return {
-        success: true,
-        status: HttpStatus.CREATED,
-        message: `Note created successfully`,
+    try {
+      // Create a new note object
+      const data = {
+        ...createNoteDto,
+        createdAt: new Date(),
+        isDeleted: false,
       };
-    }
 
-    throw new HttpException(
-      'Unable to create note',
-      HttpStatus.INTERNAL_SERVER_ERROR,
-    );
+      // Create note and save in DB
+      const createdNote = await this.noteModel.create(data);
+
+      if (createdNote) {
+        return {
+          success: true,
+          status: HttpStatus.CREATED,
+          message: `Note created successfully`,
+        };
+      }
+
+      throw new HttpException(
+        'Unable to create note',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    } catch (error) {
+      const { message, statusCode } = ErrorComposer.compose(error);
+      throw new HttpException(message, statusCode);
+    }
   }
 
   async fetchNotes(): Promise<APIResponse<Note[]>> {
-    // Fetch all notes available in the DB
-    const notes = await this.noteModel.find({ isDeleted: false });
+    try {
+      // Fetch all notes available in the DB
+      const notes = await this.noteModel.find({ isDeleted: false });
 
-    if (notes) {
-      return {
-        success: true,
-        status: HttpStatus.OK,
-        message: `Notes fetched successfully`,
-        data: notes,
-      };
+      if (notes) {
+        return {
+          success: true,
+          status: HttpStatus.OK,
+          message: `Notes fetched successfully`,
+          data: notes,
+        };
+      }
+
+      throw new HttpException(
+        'Unable to fetch notes',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    } catch (error) {
+      const { message, statusCode } = ErrorComposer.compose(error);
+      throw new HttpException(message, statusCode);
     }
-
-    throw new HttpException(
-      'Unable to fetch notes',
-      HttpStatus.INTERNAL_SERVER_ERROR,
-    );
   }
 
   async fetchNoteById(id: string): Promise<APIResponse<Note>> {
-    // Fetch note available in the DB using provided
-    const note = await this.noteModel
-      .findOne({ _id: id, isDeleted: false })
-      .exec();
+    try {
+      // Fetch note available in the DB using provided
+      const note = await this._findNote(id);
 
-    if (!note) {
-      return {
-        success: false,
-        status: HttpStatus.NOT_FOUND,
-        message: `Note does not exist`,
-      };
+      if (note) {
+        return {
+          success: true,
+          status: HttpStatus.OK,
+          message: `Note fetched successfully`,
+          data: note,
+        };
+      }
+
+      throw new HttpException(
+        'Unable to fetch note',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    } catch (error) {
+      const { message, statusCode } = ErrorComposer.compose(error);
+      throw new HttpException(message, statusCode);
     }
-
-    if (note) {
-      return {
-        success: true,
-        status: HttpStatus.OK,
-        message: `Note fetched successfully`,
-        data: note,
-      };
-    }
-
-    throw new HttpException(
-      'Unable to fetch note',
-      HttpStatus.INTERNAL_SERVER_ERROR,
-    );
   }
 
   async updateNote(id: string, body: CreateNoteDto): Promise<APIResponse> {
-    // Fetch note available in the DB using provided id and update with new data
-    const { title, content } = body;
+    try {
+      // Fetch note available in the DB using provided id and update with new data
+      const { title, content } = body;
 
-    // Validate note exists
-    const note = await this.noteModel
-      .findOne({ _id: id, isDeleted: false })
-      .exec();
+      // Validate note exists
+      await this._findNote(id);
 
-    if (!note) {
-      return {
-        success: false,
-        status: HttpStatus.NOT_FOUND,
-        message: `Note does not exist`,
-      };
+      // Update and save note
+      const updatedNote = await this.noteModel.findByIdAndUpdate(id, {
+        title,
+        content,
+      });
+
+      // Return note
+      if (updatedNote) {
+        return {
+          success: true,
+          status: HttpStatus.OK,
+          message: `Note updated successfully`,
+        };
+      }
+
+      throw new HttpException(
+        'Unable to fetch note',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    } catch (error) {
+      const { message, statusCode } = ErrorComposer.compose(error);
+      throw new HttpException(message, statusCode);
     }
-
-    // Update and save note
-    const updatedNote = await this.noteModel.findByIdAndUpdate(id, {
-      title,
-      content,
-    });
-
-    // Return note
-    if (updatedNote) {
-      return {
-        success: true,
-        status: HttpStatus.OK,
-        message: `Note updated successfully`,
-      };
-    }
-
-    throw new HttpException(
-      'Unable to fetch note',
-      HttpStatus.INTERNAL_SERVER_ERROR,
-    );
   }
 
   async deleteNote(id: string): Promise<APIResponse> {
-    // Fetch note available in the DB using provided id and update with new data
+    try {
+      // Fetch note available in the DB using provided id and update with new data
 
-    // Validate note exists
+      // Validate note exists
+      await this._findNote(id);
+
+      // soft delete note note
+      const deletedNote = await this.noteModel.findByIdAndUpdate(id, {
+        isDeleted: true,
+      });
+
+      // Return note
+      if (deletedNote) {
+        return {
+          success: true,
+          status: HttpStatus.OK,
+          message: `Note deleted successfully`,
+        };
+      }
+
+      throw new HttpException(
+        'Unable to fetch note',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    } catch (error) {
+      const { message, statusCode } = ErrorComposer.compose(error);
+      throw new HttpException(message, statusCode);
+    }
+  }
+
+  private async _findNote(id: String) {
     const note = await this.noteModel
       .findOne({ _id: id, isDeleted: false })
       .exec();
 
     if (!note) {
-      return {
-        success: false,
-        status: HttpStatus.NOT_FOUND,
-        message: `Note does not exist`,
-      };
+      throw new HttpException('Note does not exist', HttpStatus.NOT_FOUND);
     }
 
-    // soft delete note note
-    const deletedNote = await this.noteModel.findByIdAndUpdate(id, {
-      isDeleted: true,
-    });
-
-    // Return note
-    if (deletedNote) {
-      return {
-        success: true,
-        status: HttpStatus.OK,
-        message: `Note deleted successfully`,
-      };
-    }
-
-    throw new HttpException(
-      'Unable to fetch note',
-      HttpStatus.INTERNAL_SERVER_ERROR,
-    );
+    return note;
   }
 }
