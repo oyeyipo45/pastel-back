@@ -17,6 +17,18 @@ export class EnvironmentVariables implements Config {
   @IsNotEmpty()
   @IsEnum(Environment)
   NODE_ENV!: Environment;
+
+  @IsNotEmpty()
+  @IsDefined()
+  USERNAME!: string;
+
+  @IsNotEmpty()
+  @IsDefined()
+  PASSWORD!: string;
+
+  @IsNotEmpty()
+  @IsDefined()
+  DB_NAME!: string;
 }
 
 export function configValidator(
