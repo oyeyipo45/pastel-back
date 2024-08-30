@@ -1,6 +1,10 @@
 # Quick Local Setup Guide
 
-- To run the shortlet backend locally, follow the steps below:
+<p align="center">
+    <img src="./pastel-logo.svg" alt="Pastel Logo" width="200" height="200" />
+</p>
+
+- To run the pastel backend locally, follow the steps below:
 
 - Clone repository
 
